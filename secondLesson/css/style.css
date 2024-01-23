@@ -1,0 +1,13 @@
+body {
+    font-size: 24px;
+}
+.title {
+    font-size: 32px;
+    text-align: center;
+}
+.title__user {
+    font-size: 28px;
+}
+.row {
+    padding: 8px;
+}
