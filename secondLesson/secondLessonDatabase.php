@@ -9,6 +9,7 @@
 <body>
 
     <?php
+    
         $conn = mysqli_connect("localhost", "root", "", "boiko");
         $query = 'SELECT * FROM user';
         $res = mysqli_query($conn, $query);?>
