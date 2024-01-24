@@ -4,8 +4,8 @@ class User {
     public $firstName, $lastName, $email;
 
     public function __construct($firstName, $lastName, $email) {
-        $this->firstName = $firstName;
-        $this->lastName = $lastName;
+        $this->firstName = strlen($firstName) > 128 ? substr($firstName, 0, 128) : $firstName;
+        $this->lastName = strlen($lastName) > 128 ? substr($lastName, 0, 128) : $lastName;
         $this->email = $email;
     }
 
@@ -14,7 +14,7 @@ class User {
     }
 }
 
-$tom = new User("Tom", "Marley", "Marley.com");
+$tom = new User("Tommy", "Marley", "Marley.com");
 $tom->sayAboutMe();
  
 $bob = new User("Bob", "Nossom", "Bob.com");
@@ -65,4 +65,8 @@ foreach ($cars as $car) {
     array_push($objCars, new Car(...$car));
 }
 
-var_dump($objCars);
+$objCars[0]->getInfo();
+$objCars[1]->getInfo();
+$objCars[2]->getInfo();
+$objCars[3]->getInfo();
+$objCars[4]->getInfo();
