@@ -53,6 +53,7 @@ class Car {
 }
 
 echo "<br>";
+// Добавить ключи
 $cars = [
     ["Hyundai", "Solaris", "Легковая", 2013, 1000000, 350],
     ["Hyundai", "Creta", "Внедорожник", 2018, 2000000, 450, "Yellow"],
@@ -64,7 +65,7 @@ $objCars = [];
 foreach ($cars as $car) {
     array_push($objCars, new Car(...$car));
 }
-
+// Через map переделать
 $objCars[0]->getInfo();
 $objCars[1]->getInfo();
 $objCars[2]->getInfo();
