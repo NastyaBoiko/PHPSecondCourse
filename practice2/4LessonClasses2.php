@@ -53,17 +53,17 @@ class Car {
 }
 
 echo "<br>";
-// Добавить ключи
+// Добавить ключи done
 $cars = [
-    ["Hyundai", "Solaris", "Легковая", 2013, 1000000, 350],
-    ["Hyundai", "Creta", "Внедорожник", 2018, 2000000, 450, "Yellow"],
-    ["Hyundai", "Accent", "Легковая", 2019, 1900000, 550, "Red"],
-    ["Kia", "Rio", "Легковая", 2019, 2200000, 300, "Grey"],
-    ["Kia", "K5", "Легковая", 2020, 3400000, 400, "Grey"]
+    ["brand" => "Hyundai", "model" => "Solaris", "type" => "Легковая", "year" => 2013, "price" => 1000000, "weight" => 350],
+    ["brand" => "Hyundai", "model" => "Creta", "type" => "Внедорожник", "year" => 2018, "price" => 2000000, "weight" => 450, "color" => "Yellow"],
+    ["brand" => "Hyundai", "model" => "Accent", "type" => "Легковая", "year" => 2019, "price" => 1900000, "weight" => 550, "color" => "Red"],
+    ["brand" => "Kia", "model" => "Rio", "type" => "Легковая", "year" => 2019, "price" => 2200000, "weight" => 300, "color" => "Grey"],
+    ["brand" => "Kia", "model" => "K5", "type" => "Легковая", "year" => 2020, "price" => 3400000, "weight" => 400, "color" => "Grey"]
 ];
 $objCars = [];
 foreach ($cars as $car) {
-    array_push($objCars, new Car(...$car));
+    array_push($objCars, new Car(...array_values($car)));
 }
 // Через map переделать
 $objCars[0]->getInfo();
