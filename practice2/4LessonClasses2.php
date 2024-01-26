@@ -68,8 +68,5 @@ foreach ($cars as $car) {
 // Через map переделать
 // $objCars[0]->getInfo();
 // $objCars[1]->getInfo();
-// $objCars[2]->getInfo();
-// $objCars[3]->getInfo();
-// $objCars[4]->getInfo();
 
 array_map(fn($objCar) => $objCar->getInfo(), $objCars);
