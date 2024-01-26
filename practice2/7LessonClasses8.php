@@ -2,14 +2,13 @@
 $users = json_decode(file_get_contents('users.json'));
 
 if (isset($_POST['type'])) {
-    var_dump($_POST);
     array_push($users, $_POST);
     file_put_contents('users.json', json_encode($users, JSON_UNESCAPED_UNICODE));
     header("Location: 7LessonClasses8.php");
     exit();
 } else if (isset($_GET['id'])) {
     unset($users[$_GET['id']]);
-    file_put_contents('users.json', json_encode($users, JSON_UNESCAPED_UNICODE));
+    file_put_contents('users.json', json_encode(array_values($users), JSON_UNESCAPED_UNICODE));
     header("Location: 7LessonClasses8.php");
     exit();
 }
