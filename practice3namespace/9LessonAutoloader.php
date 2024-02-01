@@ -7,7 +7,7 @@ use \Scr\Persons\Employee\Teacher;
 
 spl_autoload_register(function ($class) {
     $pathArray = explode("\\", $class);
-    require_once implode("/", $pathArray). ".php";
+    require_once implode("/", $pathArray) . ".php";
 });
 
 // Для быстрого создания json
