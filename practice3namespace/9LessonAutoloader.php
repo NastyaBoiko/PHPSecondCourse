@@ -5,10 +5,7 @@ use \Scr\Persons\Students\Student;
 use \Scr\Persons\Employee\Manager;
 use \Scr\Persons\Employee\Teacher;
 
-spl_autoload_register(function ($class) {
-    $pathArray = explode("\\", $class);
-    require_once implode("/", $pathArray) . ".php";
-});
+spl_autoload_register();
 
 // Для быстрого создания json
 $persons = [
