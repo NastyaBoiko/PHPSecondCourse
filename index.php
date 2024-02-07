@@ -8,4 +8,5 @@ usort($g,function($a,$b) {
     else
         return is_dir($a) ? -1 : 1;
 });
+
 echo implode("<br>",array_map(function($a) {return '<a href="'.$a.'">'.$a.'</a>';},$g));
