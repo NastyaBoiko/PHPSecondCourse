@@ -16,8 +16,8 @@ class ClassTeacher extends Teacher {
 
     public function printMyGroups() {
         array_map(function($group) {
-            echo "<br/>Классный руководитель: " . $this->getFirstName() . "<br/>";
-            echo "Группа: " . $group->getName() . "<br>";
+            echo "<br><div style=\"background-color:#f0bfb0;\">Классный руководитель: " . $this->getFirstName() . "</div>";
+            echo "<div style=\"background-color:#f0bfb0;\">Группа: " . $group->getName() . "</div>";
             $group->printStudents();
         }, $this->groups);
     }

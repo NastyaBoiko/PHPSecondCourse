@@ -18,19 +18,15 @@ $persons = [
     ["type" => "Student", "firstName" => "Abby", "lastName" => "Yellow", "email" => "Yellow@mail.com", "cource" => 1, "groupe" => "21"],
     ["type" => "Student", "firstName" => "Morris", "lastName" => "Red", "email" => "Red@mail.com", "cource" => 1, "groupe" => "23"],
     ["type" => "Student", "firstName" => "Klark", "lastName" => "White", "email" => "White@mail.com", "cource" => 3, "groupe" => "21"],
-    // ["type" => "Student", "firstName" => "Billy", "lastName" => "Black", "email" => "Black@mail.com", "cource" => 2, "groupe" => "21"],
-    ["type" => "ClassTeacher", "firstName" => "Mary", "lastName" => "Lock", "email" => "Lock@mail.com", "subjects" => ['русский', 'литература'], "groupe" => ["22", "23", "24"]],
-    ["type" => "ClassTeacher", "firstName" => "Josh", "lastName" => "Washington", "email" => "Washington@mail.com", "subjects" => ['английский'], "groupe" => ["21"]]
-    // ["type" => "Manager", "firstName" => "Lenny", "lastName" => "Lockster", "email" => "Lockster@mail.com", "position" => "завуч", "jobDuties" => ['организация учебного процесса', 'выполнение учебных программ']],
-    // ["type" => "Manager", "firstName" => "Helen", "lastName" => "Marine", "email" => "Marine@mail.com", "position" => "директор", "jobDuties" => ['организация образовательной (учебно-воспитательной) работы', ' создание режима соблюдения норм и правил']]
+    ["type" => "Student", "firstName" => "Billy", "lastName" => "Black", "email" => "Black@mail.com", "cource" => 2, "groupe" => "21"],
+    ["type" => "ClassTeacher", "firstName" => "Mary", "lastName" => "Lock", "email" => "Lock@mail.com", "subjects" => ['русский', 'литература'], "groupe" => ["22", "23", "24", "ИВ2-22"]],
+    ["type" => "ClassTeacher", "firstName" => "Josh", "lastName" => "Washington", "email" => "Washington@mail.com", "subjects" => ['английский'], "groupe" => ["21" ]]
 ];
 if (!file_exists('users.json')) {
     file_put_contents('users.json', json_encode($persons, JSON_UNESCAPED_UNICODE));
 }
 
 $users = json_decode(file_get_contents('users.json'));
-
-// var_dump($users);
 
 if (isset($_POST['type'])) {
     array_push($users, $_POST);
@@ -48,6 +44,39 @@ if (isset($_POST['type'])) {
     header("Location: " . basename(__FILE__));
     exit();
 }
+
+$objUsers = [];
+$objGroups = [];
+$college = new College('RTK');
+
+// Создание классных руководителей
+foreach($users as $key => $user) {
+    // Преобразуем объекты в массив:
+    $objFields = get_object_vars($user);
+    $userType = $objFields['type'];
+    unset($objFields['type']);
+    
+    if ($userType == "ClassTeacher") {
+        // Создаем классного руководителя и добавляем его в колледж и массив, который выводит в конце всех
+        $objClassTeacher = new ClassTeacher($objFields["firstName"], $objFields["lastName"], $objFields["email"], $objFields["subjects"]);
+        $college->addClassTeacher($objClassTeacher);
+        $objUsers[$key] = $objClassTeacher;
+
+        // Создаем группу, чьим руководителем является созданный ClassTeacher, добавляем эту группу классному руководителю, добавляем 
+        $classTeacherGroupes = $objFields['groupe'];
+
+        foreach ($classTeacherGroupes as $classTeacherGroupe) {
+            $objGroupe = new Group($classTeacherGroupe);
+            $objClassTeacher->addGroup($objGroupe);
+            array_push($objGroups, $objGroupe);
+        }
+    }
+}
+// Сортировка, чтобы группы в селекте выводились по порядку
+usort($objGroups, function($group1, $group2) {
+    return strcmp($group1->getName(), $group2->getName());
+});
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -82,46 +111,26 @@ if (isset($_POST['type'])) {
         <br>
 
         <label for="groupe">Группа:</label>
-        <input name="groupe" id="groupe" type="text" required>
+        <select name="groupe">
+        <?php
+        foreach ($objGroups as $key => $groupSelect)  {
+        ?>
+            <option value="<?php echo $groupSelect->getName();?>"><?php echo $groupSelect->getName();?></option>
+        <?php
+        }
+        ?>
+        </select>
         <br>
         <br>
-
 
         <button type="submit">Добавить</button>
-        <!-- ["type" => "Student", "firstName" => "Bob", "lastName" => "Nossom", "email" => "Bob@mail.com", "cource" => 4, "groupe" => "ИВ2-22"], -->
     </form>
 
 
 <?php
 
-$objUsers = [];
-$objGroups = [];
-$college = new College('RTK');
 
-// Создание классных руководителей
-foreach($users as $user) {
-    $objFields = get_object_vars($user);
-    $userType = $objFields['type'];
-    unset($objFields['type']);
-    
-    if ($userType == "ClassTeacher") {
-        // Создаем классного руководителя и добавляем его в колледж и массив, который выводит в конце всех
-        $objClassTeacher = new ClassTeacher($objFields["firstName"], $objFields["lastName"], $objFields["email"], $objFields["subjects"]);
-        $college->addClassTeacher($objClassTeacher);
-        array_push($objUsers, $objClassTeacher);
-
-        // Создаем группу, чьим руководителем является созданный ClassTeacher, добавляем эту группу классному руководителю, добавляем 
-        $classTeacherGroupes = $objFields['groupe'];
-
-        foreach ($classTeacherGroupes as $classTeacherGroupe) {
-            $objGroupe = new Group($classTeacherGroupe);
-            $objClassTeacher->addGroup($objGroupe);
-            array_push($objGroups, $objGroupe);
-        }
-    }
-}
-
-foreach($users as $user) {
+foreach($users as $key => $user) {
     $objFields = get_object_vars($user);
     $userType = $objFields['type'];
     unset($objFields['type']);
@@ -133,31 +142,14 @@ foreach($users as $user) {
                 $group->addStudent($objUser);
             }
         }
-    } else if ($userType == "Teacher") {
-        $objUser = new Teacher(...array_values($objFields));
-    } else if ($userType == "Manager") {
-        $objUser = new Manager(...array_values($objFields));
     } else if ($userType == "ClassTeacher") {
         continue;
     }
-    array_push($objUsers, $objUser);
+    $objUsers[$key] = $objUser;
 }
 
-$college->printCollege();
+$college->printCollege();?>
 
-foreach ($objUsers as $key => $obj) {
-    $obj->sayAboutMe();
-    echo "<a href=\"" . basename(__FILE__) . "?id=$key\">Удалить</a><br>";
-    ?>
-    <form action="#" method="post">
-        <input type="hidden" name="id" value="<?php echo $key;?>"/>
-        <br>
-        <button type="submit">Удалить</button>
-    </form>
-    
-    <?php
-}
-?>
 
 </body>
 </html>

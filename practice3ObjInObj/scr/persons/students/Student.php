@@ -35,9 +35,13 @@ class Student extends User {
         return self::$numberStudents;
     }
 
-    public function sayAboutMe() {
+    public function sayAboutMe(bool $fullInfo = false) {
         parent::sayAboutMe();
-        echo "Курс: $this->cource<br>Группа: $this->groupe<br>Является студентом<br>";
+        $info = "Курс: $this->cource<br>";
+        if ($fullInfo) {
+            $info .= "Группа: $this->groupe<br>Является студентом<br>";
+        }
+        echo $info;
     }
     public static function printStudentInfo($student) {
         echo "<br>Имя: {$student->getFirstName()}<br>Фамилия: {$student->getLastName()}<br>Курс: $student->cource<br>Группа: $student->groupe<br>";
