@@ -4,38 +4,27 @@ spl_autoload_register();
 
 $route = $_GET['route'] ?? '';
 
-// echo 'route ' . $route;
+$routes = require __DIR__ . '/src/config/routes.php';
+// var_dump($routes);
 
-$pattern = '~^hello/(.*)$~';
+$isRouteFound = false;
+foreach ($routes as $pattern => $controllerAndAction) {
+    preg_match($pattern, $route, $matches);
+    if (!empty($matches)) {
+        $isRouteFound = true;
+        break;
+    }
+}
 
-preg_match($pattern, $route, $matches);
-
-if (!empty($matches)) {
-    $controller = new \Src\Controllers\MainController();
-    $controller->sayHello($matches[1]);
+if (!$isRouteFound) {
+    echo 'Страница не найдена!';
     return;
 }
 
-$pattern = "~^$~";
+// var_dump($controllerAndAction);
+$controllerName = $controllerAndAction[0];
+$actionName = $controllerAndAction[1];
 
-preg_match($pattern, $route, $matches);
-
-if (!empty($matches)) {
-    $controller = new \Src\Controllers\MainController();
-    $controller->main();
-    return;
-}
-
-$pattern = '~^echo/(.*)$~';
-
-preg_match($pattern, $route, $matches);
-
-if (!empty($matches)) {
-    $controller = new \Src\Controllers\MainController();
-    $controller->len($matches[1]);
-    return;
-}
-
-
-// $controller = new \Src\Controllers\MainController();
-// $controller->main();
+unset($matches[0]);
+$controller = new $controllerName();
+$controller->$actionName(...$matches);
